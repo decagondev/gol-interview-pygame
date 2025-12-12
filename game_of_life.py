@@ -15,8 +15,8 @@ COLS = 40
 CELL_SIZE = 15
 GRID_WIDTH = COLS * CELL_SIZE
 GRID_HEIGHT = ROWS * CELL_SIZE
-WINDOW_WIDTH = GRID_WIDTH + 40
-WINDOW_HEIGHT = GRID_HEIGHT + 200
+WINDOW_WIDTH = 650
+WINDOW_HEIGHT = 650
 
 # Colors
 WHITE = (255, 255, 255)
@@ -53,14 +53,19 @@ class GameOfLife:
         self.speed = 200  # milliseconds
         self.last_update = 0
 
-        # Button positions
-        self.button_y = GRID_HEIGHT + 20
-        self.start_button = pygame.Rect(20, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
-        self.stop_button = pygame.Rect(130, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
-        self.clear_button = pygame.Rect(240, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
-        self.random_button = pygame.Rect(350, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
-        self.speed_slider = pygame.Rect(460, self.button_y + 10, 150, 20)
-        self.speed_slider_handle = pygame.Rect(460 + (self.speed - 50) // 6, self.button_y + 5, 10, 30)
+        # Button positions - centered and better spaced
+        self.button_y = GRID_HEIGHT + 30
+        button_start_x = 50
+        button_spacing = 15
+        self.start_button = pygame.Rect(button_start_x, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
+        self.stop_button = pygame.Rect(button_start_x + BUTTON_WIDTH + button_spacing, self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
+        self.clear_button = pygame.Rect(button_start_x + 2 * (BUTTON_WIDTH + button_spacing), self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
+        self.random_button = pygame.Rect(button_start_x + 3 * (BUTTON_WIDTH + button_spacing), self.button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
+        
+        # Speed slider positioned below buttons
+        slider_y = self.button_y + BUTTON_HEIGHT + 20
+        self.speed_slider = pygame.Rect(button_start_x, slider_y, 200, 20)
+        self.speed_slider_handle = pygame.Rect(button_start_x + (self.speed - 50) * 200 // 950, slider_y - 5, 10, 30)
 
         # TODO: Initialize the grid with all dead cells (False)
         # Create a 2D list of size ROWS x COLS
@@ -145,8 +150,8 @@ class GameOfLife:
         Args:
             value: New speed value in milliseconds (50-1000)
         """
-        # Your code here
-        pass
+        self.speed = value
+        self.speed_slider_handle.x = self.speed_slider.x + (self.speed - 50) * 200 // 950
 
     def draw_grid(self) -> None:
         """Draw the grid of cells on the screen."""
@@ -211,7 +216,7 @@ class GameOfLife:
         label = self.small_font.render("Speed:", True, TEXT_COLOR)
         self.screen.blit(label, (self.speed_slider.x, self.speed_slider.y - 20))
         speed_text = self.small_font.render(f"{self.speed}ms", True, INDIGO)
-        self.screen.blit(speed_text, (self.speed_slider.x + self.speed_slider.width + 10, self.speed_slider.y - 5))
+        self.screen.blit(speed_text, (self.speed_slider.x + self.speed_slider.width + 15, self.speed_slider.y - 5))
 
     def draw_info(self) -> None:
         """Draw generation counter and instructions."""
